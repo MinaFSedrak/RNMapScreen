@@ -96,6 +96,15 @@ def enableProguardInReleaseBuilds = false
 android {
     compileSdkVersion 23
     buildToolsVersion "23.0.1"
+    
+    signingConfigs{
+       config {
+           keyAlias 'capstone'
+           keyPassword 'footballsoccer'
+           storeFile file("./keystore")
+           storePassword 'footballsoccer'
+       }
+   }
 
     defaultConfig {
         applicationId "com.rnmapscreen"
@@ -107,6 +116,7 @@ android {
             abiFilters "armeabi-v7a", "x86"
         }
     }
+  
     splits {
         abi {
             reset()
@@ -117,8 +127,9 @@ android {
     }
     buildTypes {
         release {
-            minifyEnabled enableProguardInReleaseBuilds
+            minifyEnabled false
             proguardFiles getDefaultProguardFile("proguard-android.txt"), "proguard-rules.pro"
+            signingConfigs signingConfigs.config
         }
     }
     // applicationVariants are e.g. debug, release
@@ -137,8 +148,15 @@ android {
 }
 
 dependencies {
+    compile project(':react-native-vector-icons')
     compile fileTree(dir: "libs", include: ["*.jar"])
     compile "com.android.support:appcompat-v7:23.0.1"
+    compile(project(':react-native-maps')){
+        exclude group: 'com.google.android.gms', module: 'play-services-base'
+        exclude group: 'com.google.android.gms', module: 'play-services-maps'
+    }
+    compile 'com.google.android.gms:play-services-base:10.0.1'
+    compile 'com.google.android.gms:play-services-maps:10.0.1'
     compile "com.facebook.react:react-native:+"  // From node_modules
 }
 
